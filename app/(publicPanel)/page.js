@@ -5,14 +5,14 @@ import Category from "../models/Category";
 import ConnectDb from "../utils/ConnectDb";
 import Course from "../models/Course";
 
+export const dynamic = "force-dynamic";
+
 function toPlain(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
 export default async function Home({ searchParams }) {
-  await ConnectDb();
-
-  // Safe usage - NO ERROR
+ await ConnectDb();
   const params = await searchParams;
   const page = params.page || 1;
 

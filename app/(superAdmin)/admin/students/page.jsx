@@ -4,6 +4,8 @@ import { DataTable } from '../ui/data-table';
 import { columns } from './coulumn';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 
+export const dynamic = "force-dynamic";
+
 const page = async () => {
     await ConnectDb();
     let users = await User.find({status:true});

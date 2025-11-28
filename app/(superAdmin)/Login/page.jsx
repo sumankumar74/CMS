@@ -1,51 +1,50 @@
-
-"use client"
-import AdminLogin from "../admin/ui/AdminLogin"
-
-
-import ConnectDb from "@/app/utils/ConnectDb";
+"use client";
+import AdminLogin from "../admin/ui/AdminLogin";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
+export const dynamic = "force-dynamic";
 
 const Page = () => {
-  ConnectDb();
-    const router = useRouter();
+  const router = useRouter();
 
-    const [username,setUsername] = useState("");
-    const [password,setPassword] = useState("");
-    
-    const handleSubmit = async(e)=>{
-        e.preventDefault();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-        
-        let res = await fetch("http://localhost:3000/api/admin/login",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({username,password})
-        });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let res = await fetch("http://localhost:3000/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
 
-        const data = await res.json();
-        console.log(data);
+    const data = await res.json();
+    console.log(data);
 
-        if(data.success){
-            toast.success("Admin Logged In Successfully");
-            router.push('/admin/dashboard');
-        }else{
-            toast.error("Admin not found");
-        }
+    if (data.success) {
+      toast.success("Admin Logged In Successfully");
+      router.push("/admin/dashboard");
+    } else {
+      toast.error("Admin not found");
     }
+  };
   return (
-   <>
+    <>
       <div className="Sign-Up  flex justify-center w-full items-center flex-col h-screen">
-       
         <div className="border p-5 shadow-md w-1/2 rounded-lg">
-          <AdminLogin handleSubmit={handleSubmit} />
+          <AdminLogin
+            handleSubmit={handleSubmit}
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+          />
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;

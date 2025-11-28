@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import { columns } from "./column";
 
+export const dynamic = "force-dynamic";
+
 const page = async () => {
   await ConnectDb();
 

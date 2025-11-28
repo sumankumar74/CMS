@@ -4,9 +4,8 @@ import Jwt from "jsonwebtoken";
 import ConnectDb from "@/app/utils/ConnectDb";
 import Admin from "@/app/models/Admin";
 
-ConnectDb();
-
 export const POST = async (req) => {
+  await ConnectDb();
   let records = await req.json();
   let { username, password } = records;
 
