@@ -10,7 +10,6 @@ export async function GET() {
   return NextResponse.json({ message: "Admin API working" });
 }
 
-// ========== POST ==========
 export async function POST(req) {
   await ConnectDb();
 

@@ -17,7 +17,6 @@ const Page = () => {
     e.preventDefault();
 
     try {
-      // Use NEXT_PUBLIC_BASE_URL for production-safe fetch
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
       const res = await fetch(`${baseUrl}/api/admin/login`, {
         method: "POST",

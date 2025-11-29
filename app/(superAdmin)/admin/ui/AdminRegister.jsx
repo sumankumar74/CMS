@@ -22,7 +22,7 @@ const AdminRegister = ({handleSubmit}) => {
                         <button type="submit" className=' py-2 text-white font-sans text-3xl '>REGISTER</button>
                     </div>
                      <div className='flex justify-center items-center shadow-xl mt-2 p-2  rounded-3xl font-serif hover:scale-105 duration-300 cursor-pointer'>
-                       <Link href={'/Login'} className="text-black font-sans text-xl mt-3 hover:text-gray-800 ">Already have an account? Login</Link>
+                       <Link href={'/admin/login'} className="text-black font-sans text-xl mt-3 hover:text-gray-800 ">Already have an account? Login</Link>
                     </div>
                 </form>
             </div>
