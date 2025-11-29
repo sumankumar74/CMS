@@ -1,49 +1,42 @@
-"use client";
+import { NextResponse } from "next/server";
 
-import AdminLogin from "../ui/AdminLogin";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+export function proxy(request) {
+  const path = request.nextUrl.pathname;
 
-const Page = () => {
-  const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  // Public routes
+  const publicPaths = ["/admin/register", "/signup", "/admin/login"];
+  const token = request.cookies.get("token")?.value || "";
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // If user is logged in and tries to access public page → redirect to dashboard
+  if (publicPaths.includes(path) && token) {
+    return NextResponse.redirect(new URL("/admin/dashboard", request.nextUrl));
+  }
 
-    try {
-      const res = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
+  // If user is not logged in and tries to access private page → redirect to login
+  const privatePaths = [
+    "/admin",
+    "/admin/categories",
+    "/admin/courses",
+    "/admin/courses/insert",
+    "/admin/dashboard",
+  ];
 
-      const data = await res.json();
+  if (privatePaths.includes(path) && !token) {
+    return NextResponse.redirect(new URL("/admin/login", request.nextUrl));
+  }
 
-      if (res.status === 200 && data.success) {
-        toast.success(data.msg);
-        router.push("/admin/dashboard");
-      } else {
-        toast.error(data.msg || "Invalid username or password");
-      }
-    } catch (err) {
-      toast.error("Something went wrong. Try again.");
-    }
-  };
+  // Otherwise, allow access
+  return NextResponse.next();
+}
 
-  return (
-    <div className="flex justify-center items-center h-screen">
-      <AdminLogin
-        handleSubmit={handleSubmit}
-        username={username}
-        setUsername={setUsername}
-        password={password}
-        setPassword={setPassword}
-      />
-    </div>
-  );
+export const config = {
+  matcher: [
+    "/admin",
+    "/admin/categories",
+    "/admin/courses/insert",
+    "/admin/courses",
+    "/admin/dashboard",
+    "/admin/register",
+    "/admin/login",
+  ],
 };
-
-export default Page;
