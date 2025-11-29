@@ -1,32 +1,39 @@
-
 import { NextResponse } from "next/server";
-import bycrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 import Admin from "@/app/models/Admin";
 import ConnectDb from "@/app/utils/ConnectDb";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req){
-   await ConnectDb();
-    let data = await req.json();
-    return NextResponse.json(data);
+// ========== GET ==========
+export async function GET() {
+  return NextResponse.json({ message: "Admin API working" });
 }
 
-export const POST = async(req)=>{
-    let record = await req.json();
-  
-    let {username, password}= record;
-    
-    let salt = await bycrypt.genSalt(10);
-    let hashedPassword = await bycrypt.hash(password, salt);
-    password = hashedPassword;
+// ========== POST ==========
+export async function POST(req) {
+  await ConnectDb();
 
-    let data = new Admin({username, password:hashedPassword});
-    try{
-        data = await data.save();
-        return NextResponse.json({"msg":"Admin Account Created Successfully"})
-    }
-    catch(err){
-        return NextResponse.json({"msg":"something went wrong", "error": err.message})
-    }
+  try {
+    const { username, password } = await req.json();
+
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Save admin
+    const admin = new Admin({
+      username,
+      password: hashedPassword,
+    });
+
+    await admin.save();
+
+    return NextResponse.json({ msg: "Admin Account Created Successfully" });
+  } catch (err) {
+    return NextResponse.json({
+      msg: "Something went wrong",
+      error: err.message,
+    });
+  }
 }

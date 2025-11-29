@@ -1,36 +1,55 @@
-import AdminRegister from "../ui/AdminRegister";
-import toast from "react-hot-toast";
-import { redirect } from "next/navigation";
-import ConnectDb from "@/app/utils/ConnectDb";
+"use client";
 
-export const dynamic = "force-dynamic";
-const page = async() => {
-  await ConnectDb();
+import AdminRegister from "../ui/AdminRegister";
+import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+export default function Page() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (formData) => {
-    "use server";
+    const username = formData.get("username");
+    const password = formData.get("password");
 
-    let username = formData.get("username");
-    let password = formData.get("password");
-
-    let data = { username, password }
-
-    let res = await fetch("http://localhost:3000/api/admin/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    const register = await res.json();
-    if (register.success) {
-     console.log("Admin Registered Successfully");
+    if (!username || !password) {
+      toast.error("All fields are required");
+      return;
     }
-    redirect("/Login");
-  };
-  return (
-    <div className="min-h-screen flex justify-center items-center w-1/ mx-auto -mt-20 ">
-      <AdminRegister handleSubmit={handleSubmit} />
-    </div>
-  );
-};
 
-export default page;
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/admin/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+      setLoading(false);
+
+      if (res.ok) {
+        toast.success("Admin Registered Successfully");
+        setTimeout(() => {
+          router.push("/admin/login");
+        }, 1500);
+      } else {
+        toast.error(data.msg || "Registration failed");
+      }
+    } catch (err) {
+      setLoading(false);
+      toast.error("Something went wrong");
+    }
+  };
+
+  return (
+    <>
+      <Toaster position="top-center" />
+      <div className="min-h-screen flex justify-center items-center w-full mx-auto -mt-20">
+        <AdminRegister handleSubmit={handleSubmit} loading={loading} />
+      </div>
+    </>
+  );
+}
