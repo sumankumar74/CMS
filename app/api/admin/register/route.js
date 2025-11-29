@@ -4,9 +4,10 @@ import bycrypt from "bcryptjs";
 import Admin from "@/app/models/Admin";
 import ConnectDb from "@/app/utils/ConnectDb";
 
+export const dynamic = "force-dynamic";
 
-ConnectDb();
 export async function GET(req){
+   await ConnectDb();
     let data = await req.json();
     return NextResponse.json(data);
 }

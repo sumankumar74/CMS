@@ -4,6 +4,7 @@ import Jwt from "jsonwebtoken";
 import ConnectDb from "@/app/utils/ConnectDb";
 import Admin from "@/app/models/Admin";
 
+export const dynamic = "force-dynamic";
 export const POST = async (req) => {
   await ConnectDb();
   let records = await req.json();

@@ -13,6 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+      <Toaster/>
         <div className="h-[80px] fixed inset-x-0 top-0 z-50">
           <NavBar />
         </div>

@@ -1,5 +1,5 @@
 "use client";
-import AdminLogin from "../admin/ui/AdminLogin";
+import AdminLogin from "../ui/AdminLogin";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";

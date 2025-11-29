@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export function proxy(request) {
     let path = request.nextUrl.pathname;
 
-    const isPublicPath = path === "/Register" || path == "/signup";
+    const isPublicPath = path === "/admin/register" || path == "/signup";
 
     const token = request.cookies.get("token")?.value || ""
 
@@ -11,7 +11,7 @@ export function proxy(request) {
         return NextResponse.redirect(new URL(`${path}`, request.nextUrl))
     }
     if(!isPublicPath && !token){
-        return NextResponse.redirect(new URL("/Register", request.nextUrl))
+        return NextResponse.redirect(new URL("/admin/register", request.nextUrl))
     }
 }
 

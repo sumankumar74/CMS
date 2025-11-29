@@ -1,10 +1,11 @@
-import AdminRegister from "../admin/ui/AdminRegister";
+import AdminRegister from "../ui/AdminRegister";
 import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
 import ConnectDb from "@/app/utils/ConnectDb";
 
+export const dynamic = "force-dynamic";
 const page = async() => {
-  ConnectDb();
+  await ConnectDb();
 
   const handleSubmit = async (formData) => {
     "use server";
