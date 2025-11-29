@@ -1,7 +1,7 @@
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
-export async function middleware(req) {
+export async function proxy(req) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const path = req.nextUrl.pathname;
 
@@ -22,6 +22,6 @@ export async function middleware(req) {
 
 export const config = {
   matcher: [
-    "/admin/:path*"
+    "/admin/:path* , /admin/dashboard/:path* , /admin/courses/:path* , /admin/users/:path* , /admin/profile/:path* , /admin/login , /admin/register",
   ],
 };
