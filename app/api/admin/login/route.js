@@ -4,7 +4,8 @@ import Jwt from "jsonwebtoken";
 import ConnectDb from "@/app/utils/ConnectDb";
 import Admin from "@/app/models/Admin";
 
-export async function POST(req) {
+export const dynamic = "force-dynamic";
+export const POST = async (req) => {
   await ConnectDb();
 
   try {
@@ -12,46 +13,27 @@ export async function POST(req) {
 
     const admin = await Admin.findOne({ username });
     if (!admin) {
-      return NextResponse.json({ msg: "Invalid Username" }, { status: 400 });
+      return NextResponse.json({ msg: "Invalid username", success: false }, { status: 400 });
     }
 
     const validPassword = await bcrypt.compare(password, admin.password);
     if (!validPassword) {
-      return NextResponse.json(
-        { msg: "Invalid Username or Password" },
-        { status: 400 }
-      );
+      return NextResponse.json({ msg: "Invalid username or password", success: false }, { status: 400 });
     }
 
-    // Create token with only useful data
+    // JWT token
     const tokenData = {
       id: admin._id,
       username: admin.username,
     };
 
-    const token = Jwt.sign(tokenData, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = Jwt.sign(tokenData, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-    // Prepare response
-    const response = NextResponse.json(
-      { msg: "Login Successful", success: true },
-      { status: 200 }
-    );
-
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 3600,
-      path: "/",
-    });
+    const response = NextResponse.json({ msg: "Login Successful", success: true });
+    response.cookies.set("token", token, { httpOnly: true, path: "/" });
 
     return response;
   } catch (err) {
-    return NextResponse.json(
-      { msg: "Server Error", error: err.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ msg: "Something went wrong", error: err.message }, { status: 500 });
   }
-}
+};
