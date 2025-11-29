@@ -1,42 +1,27 @@
+import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
-export function proxy(request) {
-  const path = request.nextUrl.pathname;
+export async function middleware(req) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const path = req.nextUrl.pathname;
 
-  // Public routes
-  const publicPaths = ["/admin/register", "/signup", "/admin/login"];
-  const token = request.cookies.get("token")?.value || "";
+  const isPublicPath = path === "/admin/login" || path === "/admin/register";
 
-  // If user is logged in and tries to access public page → redirect to dashboard
-  if (publicPaths.includes(path) && token) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.nextUrl));
+  // If logged in and on login page → redirect to dashboard
+  if (isPublicPath && token) {
+    return NextResponse.redirect(new URL("/admin/dashboard", req.url));
   }
 
-  // If user is not logged in and tries to access private page → redirect to login
-  const privatePaths = [
-    "/admin",
-    "/admin/categories",
-    "/admin/courses",
-    "/admin/courses/insert",
-    "/admin/dashboard",
-  ];
-
-  if (privatePaths.includes(path) && !token) {
-    return NextResponse.redirect(new URL("/admin/login", request.nextUrl));
+  // If NOT logged in and trying to access private path → redirect to login
+  if (!isPublicPath && !token) {
+    return NextResponse.redirect(new URL("/admin/login", req.url));
   }
 
-  // Otherwise, allow access
   return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    "/admin",
-    "/admin/categories",
-    "/admin/courses/insert",
-    "/admin/courses",
-    "/admin/dashboard",
-    "/admin/register",
-    "/admin/login",
+    "/admin/:path*"
   ],
 };
