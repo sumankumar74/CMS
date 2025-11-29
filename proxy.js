@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export function middleware(request) {
+export function proxy(request) {
     let path = request.nextUrl.pathname;
 
     const isPublicPath = path === "/Register" || path == "/signup";

@@ -61,7 +61,7 @@ let SideBarRoutes = [
 const MenuBar = () => {
   return (
     <header>
-      <nav className="flex space-y-2 flex-col w-full ">
+      <nav className="flex space-y-2 flex-col w-full h-auto ">
         {SideBarRoutes.map((side,index) => <SideBarItems key={index} {...side} />)}
       </nav>
     </header>
