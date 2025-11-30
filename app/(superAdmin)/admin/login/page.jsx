@@ -18,12 +18,13 @@ const Page = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
+        credentials: "include",
       });
 
       const data = await res.json();
 
       if (res.status === 200 && data.success) {
-        toast.success(data.msg);
+        toast.success(data.msg || "Login Successful");
         router.push("/admin/dashboard");
       } else {
         toast.error(data.msg || "Invalid username or password");
@@ -31,6 +32,7 @@ const Page = () => {
     } catch (err) {
       toast.error("Something went wrong. Try again.");
     }
+
   };
 
   return (

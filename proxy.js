@@ -1,27 +1,20 @@
-import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 
-export async function proxy(req) {
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  const path = req.nextUrl.pathname;
+export function proxy(request) {
+    let path = request.nextUrl.pathname;
 
-  const isPublicPath = path === "/admin/login" || path === "/admin/register";
+    const isPublicPath = path === "/admin/login" || path == "/admin/register";
 
-  // If logged in and on login page → redirect to dashboard
-  if (isPublicPath && token) {
-    return NextResponse.redirect(new URL("/admin/dashboard", req.url));
-  }
+    const token = request.cookies.get("token")?.value || ""
 
-  // If NOT logged in and trying to access private path → redirect to login
-  if (!isPublicPath && !token) {
-    return NextResponse.redirect(new URL("/admin/login", req.url));
-  }
-
-  return NextResponse.next();
+    if(isPublicPath && token){
+        return NextResponse.redirect(new URL(`${path}`, request.nextUrl))
+    }
+    if(!isPublicPath && !token){
+        return NextResponse.redirect(new URL("/admin/login", request.nextUrl))
+    }
 }
 
 export const config = {
-  matcher: [
-    "/admin/:path* , /admin/dashboard/:path* , /admin/courses/:path* , /admin/users/:path* , /admin/profile/:path* , /admin/login , /admin/register",
-  ],
-};
+    matcher : ['/admin','/admin,dashboard','/admin/course','/admin/categories','/admin/admission','/admin/students', '/login', '/signup']
+}

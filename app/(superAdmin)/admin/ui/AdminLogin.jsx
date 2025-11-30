@@ -1,6 +1,6 @@
 const AdminLogin = ({ handleSubmit, username, setUsername, password, setPassword }) => {
   return (
-    <form onSubmit={handleSubmit} className="Admin flex justify-center items-center w-[60%] mt-10 flex-col">
+    <form onSubmit={handleSubmit} className="Admin flex justify-center border items-center w-[40%] border-red-200 p-5 shadow-lg flex-col">
       <div className="p-5 w-full rounded-xl">
         <h1 className="text-indigo-700 text-3xl mb-5 font-serif font-bold text-center">Admin Login</h1>
         <div className="flex flex-col mb-3">

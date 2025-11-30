@@ -6,7 +6,7 @@ export const PATCH = async(req, {params})=>{
     try{
         await ConnectDb();
         let values = await req.json();
-        let {courseId} = params;
+        let {courseId} = await params;
         let course = await Course.findByIdAndUpdate(courseId,{...values});
 
         return NextResponse.json(course)
@@ -20,7 +20,7 @@ export const PATCH = async(req, {params})=>{
 export const DELETE = async (req, { params }) => {
     try {
         await ConnectDb();
-        let { courseId } = params;
+        let { courseId } = await params;
         let course = await Course.findByIdAndDelete(courseId);
         return NextResponse.json(course);
     }

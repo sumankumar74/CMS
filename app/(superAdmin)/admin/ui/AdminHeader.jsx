@@ -3,6 +3,7 @@
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import AdminLogoutButton from "./AdminLogoutButton";
 
 const AdminHeader = () => {
   // const router = useRouter();
@@ -19,6 +20,7 @@ const AdminHeader = () => {
             {" "}
             Home
           </Link>
+          <AdminLogoutButton />
           {/* <button onClick={handleLogout} className=" hover:text-red-500" >Logout</button> */}
         </nav>
       </div>
