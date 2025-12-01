@@ -1,31 +1,34 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import Admin from "@/app/models/Admin";
-import ConnectDb from "@/app/utils/ConnectDb";
+import { serialize } from "cookie";
 
-export const POST = async (req) => {
-  try {
-    await ConnectDb();
+export async function POST(req) {
+  const { username, password } = await req.json();
 
-    const { username, password } = await req.json();
-    const admin = await Admin.findOne({ username });
-
-    if (!admin)
-      return NextResponse.json({ msg: "Invalid username" }, { status: 400 });
-
-    const validPassword = await bcrypt.compare(password, admin.password);
-    if (!validPassword)
-      return NextResponse.json(
-        { msg: "Invalid username or password" },
-        { status: 400 }
-      );
-
-    // Login successful → generate a JWT token (optional) or just send success
-    return NextResponse.json({ msg: "Admin Logged In Successfully", success: true });
-  } catch (err) {
+  // Dummy authentication (replace with DB logic)
+  if (username !== "admin" || password !== "123456") {
     return NextResponse.json(
-      { msg: "Something went wrong", error: err.message },
-      { status: 500 }
+      { success: false, msg: "Invalid username or password" },
+      { status: 401 }
     );
   }
-};
+
+  // Generate simple token
+  const token = "admin-session-token";
+
+  const response = NextResponse.json(
+    { success: true, msg: "Login successful" },
+    { status: 200 }
+  );
+
+  response.headers.append(
+    "Set-Cookie",
+    serialize("adminToken", token, {
+      path: "/",
+      httpOnly: true,
+      maxAge: 60 * 60 * 24,
+      sameSite: "strict",
+    })
+  );
+
+  return response;
+}

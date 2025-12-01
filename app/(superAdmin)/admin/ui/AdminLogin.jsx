@@ -1,6 +1,9 @@
+import Link from "next/link";
+
 const AdminLogin = ({ handleSubmit, username, setUsername, password, setPassword }) => {
+  
   return (
-    <form onSubmit={handleSubmit} className="Admin flex justify-center border items-center w-[40%] border-red-200 p-5 shadow-lg flex-col">
+    <form onSubmit={handleSubmit} className="Admin flex justify-center border items-center w-[40%] p-8 shadow-neutral-700 shadow-lg flex-col mt-[-15%] rounded-xl bg-white">
       <div className="p-5 w-full rounded-xl">
         <h1 className="text-indigo-700 text-3xl mb-5 font-serif font-bold text-center">Admin Login</h1>
         <div className="flex flex-col mb-3">
@@ -27,9 +30,11 @@ const AdminLogin = ({ handleSubmit, username, setUsername, password, setPassword
             required
           />
         </div>
-        <div className="flex justify-center items-center bg-gradient-to-r from-blue-700 via-green-700 to-rose-700 rounded-3xl font-serif hover:scale-105 duration-300 cursor-pointer">
+       
+         <div className="flex justify-center w-full items-center bg-gradient-to-r from-blue-700 via-green-700 to-rose-700 rounded-3xl font-serif hover:scale-105 duration-300 cursor-pointer">
           <button type="submit" className="py-2 text-white font-sans text-2xl">LOGIN</button>
         </div>
+       
       </div>
     </form>
   );

@@ -5,7 +5,6 @@ import ConnectDb from "@/app/utils/ConnectDb";
 
 export const dynamic = "force-dynamic";
 
-// ========== GET ==========
 export async function GET() {
   return NextResponse.json({ message: "Admin API working" });
 }
