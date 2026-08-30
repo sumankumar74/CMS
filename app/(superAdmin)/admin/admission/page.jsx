@@ -2,81 +2,104 @@ import ConnectDb from "@/app/utils/ConnectDb";
 import Admission from "@/app/models/Admission";
 import { DataTable } from "../ui/data-table";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
+Breadcrumb,
+BreadcrumbItem,
+BreadcrumbLink,
+BreadcrumbList,
+BreadcrumbPage,
+BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { columns } from "./column";
 
 export const dynamic = "force-dynamic";
 
 const page = async () => {
-  await ConnectDb();
+await ConnectDb();
 
-  // Fetch and populate
-  const admissions = await Admission.find({})
-    .populate("user", "name email")
-    .populate("course", "title fee instructor duration")
-    .lean();
-  // console.log("ADMISSIONS:", admissions);
-  const data = admissions.map((a) => ({
-    _id: a._id.toString(),
-    status: a.status,
-    createdAt: a.createdAt?.toString(),
-    updatedAt: a.updatedAt?.toString(),
+const admissions = await Admission.find({})
+.populate("user", "name email")
+.populate("course", "title fee instructor duration")
+.sort({ createdAt: -1 })
+.lean();
 
-    user: a.user
-      ? {
-          _id: a.user._id.toString(),
-          name: a.user.name,
-          email: a.user.email,
-        }
-      : { _id: "", name: "Unknown", email: "" },
+const data = admissions.map((admission) => ({
+_id: admission._id.toString(),
+status: admission.status || "enrolled",
 
-    course: a.course
-      ? {
-          _id: a.course._id.toString(),
-          title: a.course.title,
-          fee: a.course.fee,
-          instructor: a.course.instructor,
-          duration: a.course.duration,
-        }
-      : {
-          _id: "",
-          title: "",
-          fee: 0,
-          instructor: "",
-          duration: "",
-        },
-  }));
+createdAt: admission.createdAt
+  ? admission.createdAt.toISOString()
+  : null,
 
-  return (
-    <div className="px-10 w-full py-5 flex flex-col">
-      <div className="flex mb-5">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/admin/dashboard">Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Admissions</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
+updatedAt: admission.updatedAt
+  ? admission.updatedAt.toISOString()
+  : null,
 
-      <h2 className="text-2xl text-slate-800 font-medium mb-5">
-        Manage Admissions ({data.length})
-      </h2>
+user: admission.user
+  ? {
+      _id: admission.user._id.toString(),
+      name: admission.user.name || "Unknown",
+      email: admission.user.email || "",
+    }
+  : {
+      _id: "",
+      name: "Unknown",
+      email: "",
+    },
 
-      {/* USE CORRECT DATA */}
-      <DataTable columns={columns} data={data} />
+course: admission.course
+  ? {
+      _id: admission.course._id.toString(),
+      title: admission.course.title || "Course unavailable",
+      fee: admission.course.fee ?? 0,
+      instructor: admission.course.instructor || "N/A",
+      duration: admission.course.duration || "N/A",
+    }
+  : {
+      _id: "",
+      title: "Course unavailable",
+      fee: 0,
+      instructor: "N/A",
+      duration: "N/A",
+    },
+}));
+
+return ( <div className="w-full px-4 sm:px-6 lg:px-10 py-6"> <div className="mb-6"> <Breadcrumb> <BreadcrumbList> <BreadcrumbItem> <BreadcrumbLink href="/admin/dashboard">
+Home </BreadcrumbLink> </BreadcrumbItem>
+        <BreadcrumbSeparator />
+
+        <BreadcrumbItem>
+          <BreadcrumbPage>
+            Admissions
+          </BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+  </div>
+
+  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+    <div>
+      <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">
+        Manage Admissions
+      </h1>
+
+      <p className="text-sm text-slate-500 mt-1">
+        View and manage student course admissions.
+      </p>
     </div>
-  );
+
+    <div className="bg-sky-100 text-sky-700 px-4 py-2 rounded-lg font-semibold">
+      Total Admissions: {data.length}
+    </div>
+  </div>
+
+  <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+    <DataTable
+      columns={columns}
+      data={data}
+    />
+  </div>
+</div>
+);
 };
 
 export default page;

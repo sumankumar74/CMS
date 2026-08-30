@@ -154,18 +154,6 @@ className="w-72 rounded-xl border border-slate-200 bg-white p-2 shadow-xl">
 </DropdownMenuItem>
 
 <DropdownMenuItem asChild className="cursor-pointer rounded-lg">
-  <Link href="/admission" className="flex items-center gap-3">
-    <GraduationCap className="h-4 w-4 text-emerald-500" />
-    <div>
-      <p className="font-medium">My Admissions</p>
-      <p className="text-xs text-slate-400">
-        Check admission details
-      </p>
-    </div>
-  </Link>
-</DropdownMenuItem>
-
-<DropdownMenuItem asChild className="cursor-pointer rounded-lg">
   <Link href="/payments" className="flex items-center gap-3">
     <CreditCard className="h-4 w-4 text-violet-500" />
     <div>
