@@ -47,8 +47,8 @@ export default function Page() {
   return (
     <>
       <Toaster position="top-center" />
-      <div className="min-h-screen flex justify-center items-center w-full mx-auto -mt-20">
-        <AdminRegister handleSubmit={handleSubmit} loading={loading} />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-white to-teal-50 px-4">
+        <AdminRegister handleSubmit={handleSubmit} />
       </div>
     </>
   );

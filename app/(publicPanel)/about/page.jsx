@@ -1,6 +1,6 @@
 import React from 'react'
 import AboutVision from '../ui/AboutVision'
-import Footer from '../ui/Footer'
+
 
 const page = () => {
   return (

@@ -1,119 +1,199 @@
-"use client"
+"use client";
+
 import Link from "next/link";
 import { z } from "zod";
-import { Breadcrumb,BreadcrumbItem,BreadcrumbLink,BreadcrumbList,BreadcrumbPage,BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+Breadcrumb,
+BreadcrumbItem,
+BreadcrumbLink,
+BreadcrumbList,
+BreadcrumbPage,
+BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { Form,FormControl,FormDescription,FormField,FormItem,FormLabel} from "@/components/ui/form";
+import {
+Form,
+FormControl,
+FormDescription,
+FormField,
+FormItem,
+FormLabel,
+FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import * as React from "react";
+import { GraduationCap, ArrowLeft } from "lucide-react";
 
 const formSchema = z.object({
-  title: z.string().min(1, {
-    message: "title is required",
-  }),
+title: z.string().min(1, {
+message: "Course title is required",
+}),
 });
 
 const Page = () => {
- const router = useRouter('admin/courses/$course.courseId');
-  const form = useForm({
-      resolver: zodResolver(formSchema),
-      defaultValues: { title: "" }
-  })
+const router = useRouter();
 
-  const{ isSubmitting, isValid } = form.formState;
+const form = useForm({
+resolver: zodResolver(formSchema),
+defaultValues: {
+title: "",
+},
+});
 
-  const onSubmit = async (values) => {
-    console.log(values);
-    try {
-      const response = await axios.post("/api/courses/", values);
-      toast.success("Successfully submitted");
-      router.push(`/admin/courses/${response.data._id}`);
-    } catch (error) {
-      toast.error("error creating course ");
-    }
-  };
+const { isSubmitting, isValid } = form.formState;
 
-  return (
-    <div className="px-10 py-5">
-      <div className="flex">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/admin/dashboard">Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/admin/courses">Courses</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Insert</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+const onSubmit = async (values) => {
+try {
+const response = await axios.post("/api/courses/", values);
+
+
+  toast.success("Course created successfully");
+
+  router.push(`/admin/courses/${response.data._id}`);
+} catch (error) {
+  console.error(error);
+  toast.error("Error creating course");
+}
+
+};
+
+return ( <div className="min-h-full bg-slate-50 px-6 md:px-10 py-6"> 
+  {/* Breadcrumb */}
+  <div className="mb-6">
+    <Breadcrumb>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/admin/dashboard">
+            Home
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+
+        <BreadcrumbSeparator />
+
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/admin/courses">
+            Courses
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+
+        <BreadcrumbSeparator />
+
+        <BreadcrumbItem>
+          <BreadcrumbPage>
+            Insert
+          </BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+  </div>
+
+  {/* Page Header */}
+  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+    <div>
+      <h1 className="text-3xl font-bold text-slate-800">
+        Create New Course
+      </h1>
+
+      <p className="text-sm text-slate-500 mt-1">
+        Start by giving your course a clear and descriptive name.
+      </p>
+    </div>
+
+    <Link
+      href="/admin/courses"
+      className="inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition"
+    >
+      <ArrowLeft size={16} />
+      Back to Courses
+    </Link>
+  </div>
+
+  {/* Form Section */}
+  <div className="flex justify-center">
+    <div className="w-full max-w-2xl bg-white border border-slate-200 rounded-xl shadow-sm p-6 md:p-8">
+
+      {/* Form Header */}
+      <div className="flex items-center gap-4 mb-8">
+        <div className="w-12 h-12 rounded-xl bg-teal-100 flex items-center justify-center">
+          <GraduationCap className="w-6 h-6 text-teal-600" />
+        </div>
+
+        <div>
+          <h2 className="text-xl font-semibold text-slate-800">
+            Course Information
+          </h2>
+
+          <p className="text-sm text-slate-500">
+            Enter the basic information for your new course.
+          </p>
+        </div>
       </div>
-      <div className="flex justify-between w-full items-center">
-        <h1 className="my-3 text-3xl font-semibold text-slate-500">
-          Insert Course
-        </h1>
-        <Link
-          href="/admin/courses"
-          className="text-white bg-green-600 px-8 py-2 rounded">
-          Go Back
-        </Link>
-      </div>
 
-      <div className="flex gap-2 justify-center flex-col items-center">
-        <h1 className="text-3xl text-bold ">Name Your Course</h1>
-        <p className="text-sm italic text-slate-600">
-          What Would You like to name your course? don t worry you can change
-          this later
-        </p>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-8 w-[40%]  bg-zinc-200 p-8 rounded-xl shadow-md shadow-slate-500">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Course Title</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isSubmitting}
-                      placeholder="e.g. Web Development"
-                      {...field}
-                      className="bg-white"
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    What You will teach in this course
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium text-slate-700">
+                  Course Title
+                </FormLabel>
+
+                <FormControl>
+                  <Input
+                    disabled={isSubmitting}
+                    placeholder="e.g. Full Stack Web Development"
+                    {...field}
+                    className="h-11 bg-white border-slate-200 focus:border-teal-500 focus:ring-teal-100"
+                  />
+                </FormControl>
+
+                <FormDescription className="text-xs text-slate-500">
+                  Choose a title that clearly describes what students will
+                  learn.
+                </FormDescription>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Actions */}
+          <div className="flex justify-end gap-3 pt-4 border-t">
             <Link href="/admin/courses">
-              <Button type="button" variant="ghost">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isSubmitting}
+                className="px-5"
+              >
                 Cancel
               </Button>
             </Link>
+
             <Button
               type="submit"
               disabled={!isValid || isSubmitting}
-              className="bg-black text-white hover:bg-slate-700 hover-text-black">
-              Create Course
+              className="bg-teal-600 hover:bg-teal-700 text-white px-6"
+            >
+              {isSubmitting ? "Creating..." : "Create Course"}
             </Button>
-          </form>
-        </Form>
-      </div>
+          </div>
+        </form>
+      </Form>
     </div>
-  );
+  </div>
+</div>
+
+);
 };
 
 export default Page;
