@@ -63,7 +63,7 @@ const Page = () => {
         </h1>
         <Link
           href="/admin/courses"
-          className="text-white bg-green-600 px-3 py-2 rounded">
+          className="text-white bg-green-600 px-8 py-2 rounded">
           Go Back
         </Link>
       </div>
@@ -77,7 +77,7 @@ const Page = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-8 w-1/2  bg-zinc-200 px-8 py-4 rounded-xl">
+            className="space-y-8 mt-8 w-[40%]  bg-zinc-200 p-8 rounded-xl shadow-md shadow-slate-500">
             <FormField
               control={form.control}
               name="title"
